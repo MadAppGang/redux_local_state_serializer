@@ -1,6 +1,6 @@
 {
   "name": "redux-local-state-serializer",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Automates the process of serializing your redux state into local storage",
   "main": "index.js",
   "scripts": {
