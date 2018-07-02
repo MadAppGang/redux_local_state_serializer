@@ -22,16 +22,16 @@ or using commonJS syntax
 const localSerializer = require('redux-local-state-serializer');
 const { StateManager, Storage }  = localSerializer;
 ```
-In this case Storage is a default implementation of a local storage with that incapsulates [localForage](https://github.com/localForage/localForage "localForage") inside of it. We recommend to use this implementation because it provides a local storage (IndexedDB, WebSQL, localStorage) for a wide range of browsers. However you can provide your own implementation of a storage based on our Storage API.
+In this case Storage is a default implementation of a local storage that incapsulates [localForage](https://github.com/localForage/localForage "localForage") inside of it. We recommend to use this implementation because it provides a local storage (IndexedDB, WebSQL, localStorage) for a wide range of browsers. However you can provide your own implementation of a storage based on our Storage API.
 
-In order to proceed we need to initialize our state manager. State manager hold the necessary API methods to provide serialization. Each piece of the state gets through the serialization process before saving into the store. The package can't decide how your data has to be saved, so you should provide a serializer.
+In order to proceed we need to initialize our state manager. State manager holds the necessary API methods to provide serialization. Each piece of the state gets through the serialization process before saving into the store. The package can't decide how your data has to be saved, so you should provide a serializer.
 
 Serializer is an object that knows how to **serialize** and **deserialize** your state.
-The goal is to provider such serializer for each node of you state, and then combine them all into a one root serializer using `combineSerializers` function shipped with the package.
+The goal is to provide such serializer for each node of you state, and then combine them all into one root serializer using `combineSerializers` function shipped with the package.
 
 The idea is to export serializers along with reducers, as these components are very close to each other.
 
-Here is an example of such reducer, storing todos:
+Here is an example of such reducer:
 
 ```javascript
 export default (state = INITIAL_STATE, action) => { ... };
@@ -42,7 +42,7 @@ export const serializer = {
 };
 ```
 
-As you can see, the file that exports a reducer, also exports a serializer. In this case the serializer does not alter the state, but sometimes you need a custom logic to prepare your data before saving.
+As you can see, the file that exports a reducer, also exports a serializer. In this case the serializer does not alter the state, but sometimes you need to apply a custom logic to prepare your data before saving.
 
 **Note:** each serializer provided along with reducer implements a serialization logic for only piece of state produced by the reducer, and not the global state.
 
@@ -62,7 +62,7 @@ export const serializer = combineSerializers({
 });
 ```
 
-**Note:** `todos` is the same for reducers and serializers. It has always be this way. For serializer this key means what piece of state it is in charge of.
+**Note:** `todos` is the same for reducers and serializers. For serializer this key means what piece of state it is in charge of.
 
 You then simply import reducer along with serializer to the index file:
 
@@ -70,7 +70,7 @@ You then simply import reducer along with serializer to the index file:
 import rootReducer, { serializer } from './reducers';
 ```
 
-Now we have everyting we needed to initialize state manager
+Now you have everyting you need to initialize state manager.
 
 ```javascript
 const stateManager = new StateManager({
@@ -81,7 +81,7 @@ const stateManager = new StateManager({
 
 `key` is an identifier of the storage. You can have multiple storage instances for the domain, so you need to identify them all.
 
-As we know redux's `createStore` method allows [to pass a preloaded state](https://redux.js.org/api-reference/createstore#arguments "to pass a preloaded state") as a second argument, so we need to have this state before we create the store. In order to do that we call a special method of the `StateManager`:
+As you know redux's `createStore` method allows [to pass a preloaded state](https://redux.js.org/api-reference/createstore#arguments "to pass a preloaded state") as a second argument, so you need to have this state before creating the store. In order to do that call a special method of the `StateManager`:
 
 ```javascript
 stateManager.restore().then((state) => {
@@ -92,7 +92,7 @@ stateManager.restore().then((state) => {
 
 You get a state, that is a result of the last serialization. If this is the very first time you run the app, state will be `undefined`.
 
-The last thing we got to do is to subscribe to store changes.
+The last thing you got to do is to subscribe to store changes.
 
 ```javascript
   store.subscribe(() => stateManager.snapshot(store.getState()));
