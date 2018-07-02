@@ -22,7 +22,7 @@ or using commonJS syntax
 const localSerializer = require('redux-local-state-serializer');
 const { StateManager, Storage }  = localSerializer;
 ```
-In this case Storage is a default implementation of a local storage with that incapsulates [localForage](https://github.com/localForage/localForage "localForage") inside of it. We recommend to use this implementation because it provides a local storage (IndexedDB, WebSQL, localStorage) for a wide range of browsers. However you can provide your own implementation of a storage based on our Storage API.
+In this case Storage is a default implementation of a local storage that incapsulates [localForage](https://github.com/localForage/localForage "localForage") inside of it. We recommend to use this implementation because it provides a local storage (IndexedDB, WebSQL, localStorage) for a wide range of browsers. However you can provide your own implementation of a storage based on our Storage API.
 
 In order to proceed we need to initialize our state manager. State manager hold the necessary API methods to provide serialization. Each piece of the state gets through the serialization process before saving into the store. The package can't decide how your data has to be saved, so you should provide a serializer.
 
