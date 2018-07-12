@@ -1,5 +1,5 @@
-const localForage = require('localforage');
-const createMessageCreator = require('./errors').createMessageCreator;
+import localForage from 'localforage';
+import createMessageCreator from './errors';
 
 const createMessage = createMessageCreator('Storage initialization failed');
 
@@ -32,4 +32,4 @@ class Storage {
   }
 }
 
-exports.Storage = Storage;
+export default Storage;

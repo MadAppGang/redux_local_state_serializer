@@ -19,7 +19,7 @@ const process = (state, getSerializer) => {
     }, {});
 };
 
-exports.combineSerializers = (serializers) => {
+const combineSerializers = (serializers) => {
   const serialize = state =>
     process(state, key => serializers[key].serialize);
 
@@ -28,3 +28,5 @@ exports.combineSerializers = (serializers) => {
 
   return new Serializer(serialize, deserialize);
 };
+
+export default combineSerializers;

@@ -1,1 +1,1 @@
-exports.createMessageCreator = prefix => message => `${prefix}: ${message}`;
+export const createMessageCreator = prefix => message => `${prefix}: ${message}`;

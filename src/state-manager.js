@@ -1,4 +1,4 @@
-const createMessageCreator = require('./errors').createMessageCreator;
+import createMessageCreator from './errors';
 
 const createMessage =
   createMessageCreator('State Manager initialization failed');
@@ -48,4 +48,4 @@ class StateManager {
   }
 }
 
-exports.StateManager = StateManager;
+export default StateManager;

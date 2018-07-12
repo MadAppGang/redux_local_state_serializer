@@ -1,5 +1,5 @@
-module.exports = Object.assign({},
-  require('./state-manager'),
-  require('./storage'),
-  require('./serializer'),
-);
+import combineSerializer from './serializer';
+import StateManager from './state-manager';
+import Storage from './storage';
+
+export { combineSerializer, StateManager, Storage };
