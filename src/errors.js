@@ -1,1 +1,3 @@
-export const createMessageCreator = prefix => message => `${prefix}: ${message}`;
+const createMessageCreator = prefix => message => `${prefix}: ${message}`;
+
+export default createMessageCreator;
