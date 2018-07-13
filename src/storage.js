@@ -3,8 +3,8 @@ import createMessageCreator from './errors';
 
 const createMessage = createMessageCreator('Storage initialization failed');
 
-const MISSING_CONFIG_MESSAGE = createMessage('missing config');
-const MISSING_KEY_MESSAGE = createMessage('missing storage key');
+export const MISSING_CONFIG_MESSAGE = createMessage('missing config');
+export const MISSING_KEY_MESSAGE = createMessage('missing storage key');
 
 class Storage {
   constructor(config) {
