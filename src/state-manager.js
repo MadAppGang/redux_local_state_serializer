@@ -3,10 +3,11 @@ import createMessageCreator from './errors';
 const createMessage =
   createMessageCreator('State Manager initialization failed');
 
-const MISSING_DEPENDENCIES_MESSAGE = createMessage('missing dependencies');
-const MISSING_SERIALIZER_MESSAGE =
+export const MISSING_DEPENDENCIES_MESSAGE =
+  createMessage('missing dependencies');
+export const MISSING_SERIALIZER_MESSAGE =
   createMessage('missing serializer dependency');
-const MISSING_STORAGE_MESSAGE =
+export const MISSING_STORAGE_MESSAGE =
   createMessage('missing storage dependency');
 
 class StateManager {
