@@ -57,3 +57,57 @@ describe('containing necessary API methods', () => {
   test('"snapshot" is a func', () => expect(instance.snapshot).toBeInstanceOf(Function));
   test('"reset" is a func', () => expect(instance.reset).toBeInstanceOf(Function));
 });
+
+describe('dependency calls', () => {
+  const storage = {
+    get: jest.fn(() => Promise.resolve('some state')),
+    set: jest.fn(() => Promise.resolve()),
+    clear: jest.fn(() => Promise.resolve()),
+  };
+
+  const serializer = {
+    serialize: jest.fn(() => Promise.resolve()),
+    deserialize: jest.fn(() => Promise.resolve()),
+  };
+
+  const manager = new StateManager({ storage, serializer });
+
+  describe('storage dependency calls', () => {
+    test('calls "storage:get" inside "restore"', (done) => {
+      manager.restore().then(() => {
+        expect(storage.get).toHaveBeenCalled();
+        done();
+      });
+    });
+
+    test('calls "storage:set" inside "snapshot"', (done) => {
+      manager.snapshot().then(() => {
+        expect(storage.set).toHaveBeenCalled();
+        done();
+      });
+    });
+
+    test('calls "storage:clear" inside "reset"', (done) => {
+      manager.reset().then(() => {
+        expect(storage.clear).toHaveBeenCalled();
+        done();
+      });
+    });
+  });
+
+  describe('serializer dependency calls', () => {
+    test('calls "serialier:serialize" inside "snapshot"', (done) => {
+      manager.snapshot().then(() => {
+        expect(serializer.serialize).toHaveBeenCalled();
+        done();
+      });
+    });
+
+    test('calls "serialier:deserialize" inside "restore"', (done) => {
+      manager.snapshot().then(() => {
+        expect(serializer.deserialize).toHaveBeenCalled();
+        done();
+      });
+    });
+  });
+});
