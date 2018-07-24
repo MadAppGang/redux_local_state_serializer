@@ -6,25 +6,33 @@ class Serializer {
 }
 
 const process = (state, getSerializer) => {
-  return Object.entries(state)
+  const arrayOfPromises = Object.entries(state)
     .map((entry) => {
       const [key, value] = entry;
-
       const serialize = getSerializer(key);
+      const serializedValue = serialize(value);
 
-      return { key, value: serialize(value) };
-    })
-    .reduce((output, { key, value }) => {
-      return Object.assign({}, output, { [key]: value });
-    }, {});
+      if (serializedValue instanceof Promise) {
+        return serializedValue.then(processedValue => ({ [key]: processedValue }));
+      }
+
+      return { [key]: serializedValue };
+    });
+
+    return Promise.all(arrayOfPromises).then((arrayOfSerializedStates) => {
+        return arrayOfSerializedStates.reduce((output, partialState) => {
+          return Object.assign({}, output, partialState);
+        }, {});
+      });
 };
 
 const combineSerializers = (serializers) => {
   const serialize = state =>
     process(state, key => serializers[key].serialize);
 
-  const deserialize = state =>
-    process(state, key => serializers[key].deserialize);
+  const deserialize = state => {
+    return process(state, key => serializers[key].deserialize);
+  }
 
   return new Serializer(serialize, deserialize);
 };
