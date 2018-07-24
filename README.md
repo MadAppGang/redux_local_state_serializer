@@ -1,7 +1,7 @@
 ## Redux local state serializer
 
 Designed to provide state preserving between sessions for redux applications.
-This package uses a storage build ontop of [localForage](https://github.com/localForage/localForage "localForage") as a default, but you are free to implement a storage based on something alse.
+This package uses a storage build ontop of [localForage](https://github.com/localForage/localForage "localForage") as a default, but you are free to implement a storage based on something else.
 
 The whole concept is to restore serialized state from the storage on application initialization, and then continuously take snapshots each time the state gets changed.
 
