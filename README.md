@@ -42,6 +42,16 @@ export const serializer = {
 };
 ```
 
+If your serialization requires some async operations, serialize/deserialize functions can as well return a promise
+
+```javascript
+...
+export const serializer = {
+  serialize: state => Promise.resolve(state),
+  deserialize: state => state,
+};
+```
+
 As you can see, the file that exports a reducer, also exports a serializer. In this case the serializer does not alter the state, but sometimes you need to apply a custom logic to prepare your data before saving.
 
 **Note:** each serializer provided along with reducer implements a serialization logic for only piece of state produced by the reducer, and not the global state.
