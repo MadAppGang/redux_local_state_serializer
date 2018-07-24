@@ -31,7 +31,7 @@ class StateManager {
   restore() {
     return this._storage.get().then((state) => {
       if (!state) {
-        return undefined;
+        return Promise.resolve();
       }
 
       return this._serializer.deserialize(state);
@@ -39,9 +39,8 @@ class StateManager {
   }
 
   snapshot(state) {
-    const serializedState = this._serializer.serialize(state);
-
-    return this._storage.set(serializedState);
+    return this._serializer.serialize(state)
+      .then(serializedState => this._storage.set(serializedState));
   }
 
   reset() {
