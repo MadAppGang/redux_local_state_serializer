@@ -16,9 +16,8 @@ const process = (state, getSerializer) => {
         return serializedValue.then(processedValue => ({ [key]: processedValue }));
       }
 
-      return { [key]: value };
+      return { [key]: serializedValue };
     });
-
 
     return Promise.all(arrayOfPromises).then((arrayOfSerializedStates) => {
         return arrayOfSerializedStates.reduce((output, partialState) => {
