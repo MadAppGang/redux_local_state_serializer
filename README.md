@@ -58,7 +58,8 @@ As you can see, the file that exports a reducer, also exports a serializer. In t
 
 Even if you don't need to process your data before serialization, you have to explicitly define the serializer.
 
-But if you don't want to serialize some piece of state purposefuly, just not provide serializer and that piece of state won't save to the _Storage_.
+
+But if you don't want to serialize some piece of state just don’t provide the serializer and it won't get to the _Storage_.
 
 When you have your serializers, you simply combine them into one alike reducers, using `combineSerializers`. We recommend to do it in `reducers/index.js`.
 
