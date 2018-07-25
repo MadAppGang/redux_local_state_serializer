@@ -11,7 +11,6 @@ const process = (state, getSerializer) => {
       const [key, value] = entry;
       const serialize = getSerializer(key);
       const serializedValue = serialize(value);
-
       if (serializedValue instanceof Promise) {
         return serializedValue.then(processedValue => ({ [key]: processedValue }));
       }
@@ -27,12 +26,19 @@ const process = (state, getSerializer) => {
 };
 
 const combineSerializers = (serializers) => {
-  const serialize = state =>
-    process(state, key => serializers[key].serialize);
+  const get = serializerUnit => (key) => {
+    if (key in serializers) {
+      return serializers[key][serializerUnit];
+    }
 
-  const deserialize = state => {
-    return process(state, key => serializers[key].deserialize);
-  }
+    // defaults to a function that returns nothing
+    // (consider that user did not want to serialize this piece of state purposefuly)
+    return new Function();
+  };
+
+  const serialize = state => process(state, get('serialize'))
+
+  const deserialize = state => process(state, get('deserialize'))
 
   return new Serializer(serialize, deserialize);
 };

@@ -38,3 +38,21 @@ test('calls deserialize of the passed serializer', () => {
   
   expect(serializer.deserialize).toHaveBeenCalledWith(state);
 });
+
+test('runs serialization without exsiting serialization function', () => {
+  const output = combineSerializers({});
+
+  const state = { state: 'state', key: 'value' };
+
+  return output.serialize(state).then(serializedState =>
+      expect(serializedState).toEqual({}));
+});
+
+test('runs deserialization without exsiting deserialization function', () => {
+  const output = combineSerializers({});
+
+  const state = { state: 'state', key: 'value' };
+
+  return output.deserialize(state)
+    .then(serializedState => expect(serializedState).toEqual({}));
+});
