@@ -1,3 +1,5 @@
 examples
 node_modules
 coverage
+src
+.travis.yml
