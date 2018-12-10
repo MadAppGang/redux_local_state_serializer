@@ -6,23 +6,25 @@ class Serializer {
 }
 
 const process = (state, getSerializer) => {
-  const arrayOfPromises = Object.entries(state)
+  const promises = Object.entries(state)
     .map((entry) => {
       const [key, value] = entry;
       const serialize = getSerializer(key);
       const serializedValue = serialize(value);
+
       if (serializedValue instanceof Promise) {
-        return serializedValue.then(processedValue => ({ [key]: processedValue }));
+        serializedValue.then(processedValue => ({ [key]: processedValue }));
+        return;
       }
 
       return { [key]: serializedValue };
     });
 
-    return Promise.all(arrayOfPromises).then((arrayOfSerializedStates) => {
-        return arrayOfSerializedStates.reduce((output, partialState) => {
-          return Object.assign({}, output, partialState);
-        }, {});
-      });
+    return Promise.all(promises).then((serializedStates) => {
+      return serializedStates.reduce((output, stateFragment) => {
+        return Object.assign({}, output, stateFragment);
+      }, {});
+    });
 };
 
 const combineSerializers = (serializers) => {
@@ -32,7 +34,7 @@ const combineSerializers = (serializers) => {
     }
 
     // defaults to a function that returns nothing
-    // (consider that user did not want to serialize this piece of state purposefuly)
+    // (if user doesn't want to serialize this state fragment intentionally)
     return new Function();
   };
 

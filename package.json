@@ -5,8 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test:w": "jest --watch",
+    "test:cov": "jest --coverage",
     "build": "rm -rf dist && babel src -d dist"
   },
   "repository": {
