@@ -1,14 +1,11 @@
 import createMessageCreator from './errors';
 
-const createMessage =
-  createMessageCreator('State Manager initialization failed');
+const createMessage = createMessageCreator('State Manager initialization failed');
 
-export const MISSING_DEPENDENCIES_MESSAGE =
-  createMessage('missing dependencies');
+export const MISSING_DEPENDENCIES_MESSAGE = createMessage('missing dependencies');
+export const MISSING_STORAGE_MESSAGE = createMessage('missing storage dependency');
 export const MISSING_SERIALIZER_MESSAGE =
   createMessage('missing serializer dependency');
-export const MISSING_STORAGE_MESSAGE =
-  createMessage('missing storage dependency');
 
 class StateManager {
   constructor(dependencies) {
@@ -24,27 +21,26 @@ class StateManager {
       throw new Error(MISSING_STORAGE_MESSAGE);
     }
 
-    this._serializer = dependencies.serializer;
-    this._storage = dependencies.storage
+    this.serializer = dependencies.serializer;
+    this.storage = dependencies.storage
   }
 
   restore() {
-    return this._storage.get().then((state) => {
+    return this.storage.get().then((state) => {
       if (!state) {
         return Promise.resolve();
       }
 
-      return this._serializer.deserialize(state);
+      return this.serializer.deserialize(state);
     });
   }
 
   snapshot(state) {
-    return this._serializer.serialize(state)
-      .then(serializedState => this._storage.set(serializedState));
+    return this.serializer.serialize(state).then(this.storage.set);
   }
 
   reset() {
-    return this._storage.clear(this._key);
+    return this.storage.clear();
   }
 }
 
