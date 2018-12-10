@@ -59,18 +59,34 @@ describe('containing necessary API methods', () => {
 });
 
 describe('dependency calls', () => {
-  const storage = {
-    get: jest.fn(() => Promise.resolve('some state')),
-    set: jest.fn(() => Promise.resolve()),
-    clear: jest.fn(() => Promise.resolve()),
-  };
+  let storage;
+  let serializer;
+  let manager;
 
-  const serializer = {
-    serialize: jest.fn(() => Promise.resolve()),
-    deserialize: jest.fn(() => Promise.resolve()),
-  };
+  beforeEach(() => {
+    storage = {
+      get: jest.fn(() => Promise.resolve('some state')),
+      set: jest.fn(() => Promise.resolve()),
+      clear: jest.fn(() => Promise.resolve()),
+    };
+    serializer = {
+      serialize: jest.fn(() => Promise.resolve()),
+      deserialize: jest.fn(() => Promise.resolve()),
+    };
+    manager = new StateManager({ storage, serializer });
+  });
 
-  const manager = new StateManager({ storage, serializer });
+  test('resolves to an empty value if storage did not return value', (done) => {
+    const storage = {
+      get: jest.fn(() => Promise.resolve()),
+    };
+
+    manager = new StateManager({ storage, serializer });
+    manager.restore().then((value) => {
+      expect(value).toBe(undefined);
+      done();
+    });
+  });
 
   describe('storage dependency calls', () => {
     test('calls "storage:get" inside "restore"', (done) => {
@@ -104,7 +120,7 @@ describe('dependency calls', () => {
     });
 
     test('calls "serialier:deserialize" inside "restore"', (done) => {
-      manager.snapshot().then(() => {
+      manager.restore().then(() => {
         expect(serializer.deserialize).toHaveBeenCalled();
         done();
       });

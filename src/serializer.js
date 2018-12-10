@@ -13,8 +13,7 @@ const process = (state, getSerializer) => {
       const serializedValue = serialize(value);
 
       if (serializedValue instanceof Promise) {
-        serializedValue.then(processedValue => ({ [key]: processedValue }));
-        return;
+        return serializedValue.then(processedValue => ({ [key]: processedValue }));
       }
 
       return { [key]: serializedValue };
