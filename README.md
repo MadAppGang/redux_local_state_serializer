@@ -1,4 +1,6 @@
 ## Redux local state serializer
+[![Build Status](https://travis-ci.org/MadAppGang/redux_local_state_serializer.svg?branch=master)](https://travis-ci.org/MadAppGang/redux_local_state_serializer)
+[![Coverage Status](https://coveralls.io/repos/github/MadAppGang/redux_local_state_serializer/badge.svg?branch=master)](https://coveralls.io/github/MadAppGang/redux_local_state_serializer?branch=master)
 
 Designed to provide state preserving between sessions for redux applications.
 This package uses a storage build ontop of [localForage](https://github.com/localForage/localForage "localForage") as a default, but you are free to implement a storage based on something else.
