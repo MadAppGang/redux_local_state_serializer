@@ -1,13 +1,13 @@
 {
   "name": "redux-local-state-serializer",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "Automate the process of serializing your redux state into local storage",
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
     "test:w": "jest --watch",
     "test:cov": "jest --coverage",
-    "build": "rm -rf dist && babel src -d dist"
+    "build": "rm -rf dist && babel src -d dist --ignore src/__tests__/"
   },
   "repository": {
     "type": "git",
