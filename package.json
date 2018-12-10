@@ -22,7 +22,7 @@
     "state"
   ],
   "author": "MadAppGang",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/MadAppGang/redux_local_state_serializer/issues"
   },
