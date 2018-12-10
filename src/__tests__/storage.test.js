@@ -1,6 +1,4 @@
-import Storage, {
-  MISSING_KEY_MESSAGE, MISSING_CONFIG_MESSAGE,
-} from '../src/storage';
+import Storage, { MISSING_KEY_MESSAGE, MISSING_CONFIG_MESSAGE } from '../storage';
 
 test('should initialize with no errors', () => {
   const storage = new Storage({ key: 'key' });

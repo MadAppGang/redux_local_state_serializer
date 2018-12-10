@@ -1,4 +1,4 @@
-import { combineSerializers } from '../src';
+import { combineSerializers } from '..';
 
 test('returns an object', () => {
   const aSerializer = {

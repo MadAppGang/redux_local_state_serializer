@@ -1,4 +1,4 @@
-import createMessageCreator from '../src/errors';
+import createMessageCreator from '../errors';
 
 test('should return a function', () => {
   const output = createMessageCreator();

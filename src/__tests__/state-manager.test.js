@@ -1,10 +1,10 @@
-import { StateManager, Storage, combineSerializers } from '../src';
+import { StateManager, Storage, combineSerializers } from '..';
 
 import {
   MISSING_DEPENDENCIES_MESSAGE,
   MISSING_SERIALIZER_MESSAGE,
   MISSING_STORAGE_MESSAGE,
-} from '../src/state-manager';
+} from '../state-manager';
 
 describe('initializing with dependencies', () => {
   const storage = new Storage({ key: 'key' });
