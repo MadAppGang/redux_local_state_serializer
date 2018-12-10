@@ -1,8 +1,8 @@
 {
   "name": "redux-local-state-serializer",
   "version": "1.0.18",
-  "description": "Automates the process of serializing your redux state into local storage",
-  "main": "index.js",
+  "description": "Automate the process of serializing your redux state into local storage",
+  "main": "dist/index.js",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
