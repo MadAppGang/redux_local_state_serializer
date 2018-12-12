@@ -1,10 +1,3 @@
-class Serializer {
-  constructor(serialize, deserialize) {
-    this.serialize = serialize;
-    this.deserialize = deserialize;
-  }
-}
-
 const process = (state, getSerializer) => {
   const promises = Object.entries(state)
     .map((entry) => {
@@ -27,9 +20,9 @@ const process = (state, getSerializer) => {
 };
 
 const combineSerializers = (serializers) => {
-  const get = serializerUnit => (key) => {
+  const get = method => (key) => {
     if (key in serializers) {
-      return serializers[key][serializerUnit];
+      return serializers[key][method];
     }
 
     // defaults to a function that returns nothing
@@ -37,11 +30,10 @@ const combineSerializers = (serializers) => {
     return new Function();
   };
 
-  const serialize = state => process(state, get('serialize'))
-
-  const deserialize = state => process(state, get('deserialize'))
-
-  return new Serializer(serialize, deserialize);
+  return Object.freeze({
+    serialize: state => process(state, get('serialize')),
+    deserialize: state => process(state, get('deserialize')),
+  });
 };
 
 export default combineSerializers;
