@@ -35,8 +35,10 @@ function StateManager(dependencies) {
   const snapshot = state => serializer.serialize(state).then(storage.set);
   
   const middleware = () => store => next => action => {
+    const output = next(action);
     snapshot(store.getState());
-    next(action);
+
+    return output;
   };
 
   const reset = () => storage.clear();
