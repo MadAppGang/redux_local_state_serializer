@@ -7,48 +7,43 @@ export const MISSING_STORAGE_MESSAGE = createMessage('missing storage dependency
 export const MISSING_SERIALIZER_MESSAGE =
   createMessage('missing serializer dependency');
 
-class StateManager {
-  constructor(dependencies) {
-    if (!dependencies) {
-      throw new Error(MISSING_DEPENDENCIES_MESSAGE);
-    }
-
-    if (!dependencies.serializer) {
-      throw new Error(MISSING_SERIALIZER_MESSAGE);
-    }
-
-    if (!dependencies.storage) {
-      throw new Error(MISSING_STORAGE_MESSAGE);
-    }
-
-    this.serializer = dependencies.serializer;
-    this.storage = dependencies.storage
+function StateManager(dependencies) {
+  if (!dependencies) {
+    throw new Error(MISSING_DEPENDENCIES_MESSAGE);
   }
 
-  restore() {
-    return this.storage.get().then((state) => {
+  if (!dependencies.serializer) {
+    throw new Error(MISSING_SERIALIZER_MESSAGE);
+  }
+
+  if (!dependencies.storage) {
+    throw new Error(MISSING_STORAGE_MESSAGE);
+  }
+
+  const { serializer, storage } = dependencies;
+
+  const restore = () => {
+    return storage.get().then((state) => {
       if (!state) {
         return Promise.resolve();
       }
 
-      return this.serializer.deserialize(state);
+      return serializer.deserialize(state);
     });
-  }
+  };
 
-  middleware() {
-    return store => next => action => {
-      this.snapshot(store.getState());
-      next(action);
-    };
-  }
+  const snapshot = state => serializer.serialize(state).then(storage.set);
+  
+  const middleware = () => store => next => action => {
+    snapshot(store.getState());
+    next(action);
+  };
 
-  snapshot(state) {
-    return this.serializer.serialize(state).then(this.storage.set);
-  }
+  const reset = () => storage.clear();
 
-  reset() {
-    return this.storage.clear();
-  }
+  return Object.freeze({
+    restore, middleware, reset, snapshot,
+  });
 }
 
 export default StateManager;
