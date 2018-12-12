@@ -35,6 +35,13 @@ class StateManager {
     });
   }
 
+  middleware() {
+    return store => next => action => {
+      this.snapshot(store.getState());
+      next(action);
+    };
+  }
+
   snapshot(state) {
     return this.serializer.serialize(state).then(this.storage.set);
   }

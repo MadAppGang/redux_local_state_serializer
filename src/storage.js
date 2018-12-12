@@ -6,30 +6,24 @@ const createMessage = createMessageCreator('Storage initialization failed');
 export const MISSING_CONFIG_MESSAGE = createMessage('missing config');
 export const MISSING_KEY_MESSAGE = createMessage('missing storage key');
 
-class Storage {
-  constructor(config) {
-    if (!config) {
-      throw new Error(MISSING_CONFIG_MESSAGE);
-    }
-
-    if (!config.key) {
-      throw new Error(MISSING_KEY_MESSAGE);
-    }
-
-    this._key = config.key;
+function Storage(config) {
+  if (!config) {
+    throw new Error(MISSING_CONFIG_MESSAGE);
   }
 
-  get() {
-    return localForage.getItem(this._key);
+  if (!config.key) {
+    throw new Error(MISSING_KEY_MESSAGE);
   }
 
-  set(data) {
-    return localForage.setItem(this._key, data);
-  }
+  const get = () => localForage.getItem(config.key);
 
-  clear() {
-    return localForage.removeItem(this._key);
-  }
-}
+  const set = data => localForage.setItem(config.key, data);
+
+  const clear = () => localForage.removeItem(config.key);
+
+  return Object.freeze({
+    get, set, clear,
+  });
+};
 
 export default Storage;
