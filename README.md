@@ -2,10 +2,9 @@
 [![Build Status](https://travis-ci.org/MadAppGang/redux_local_state_serializer.svg?branch=master)](https://travis-ci.org/MadAppGang/redux_local_state_serializer)
 [![Coverage Status](https://coveralls.io/repos/github/MadAppGang/redux_local_state_serializer/badge.svg?branch=master)](https://coveralls.io/github/MadAppGang/redux_local_state_serializer?branch=master)
 
-Designed to provide state preserving between sessions for redux applications.
-This package uses a storage build ontop of [localForage](https://github.com/localForage/localForage "localForage") as a default, but you are free to implement a storage based on something else.
+Provides a set of tools to keep your redux state persistent locally. The concept is to restore serialized state from the storage on application initialization, and then continuously take snapshots each time the state gets changed.
 
-The whole concept is to restore serialized state from the storage on application initialization, and then continuously take snapshots each time the state gets changed.
+This package uses a storage build ontop of [localForage](https://github.com/localForage/localForage "localForage") as a default, but you are free to implement a storage based on something else.
 
 ## Installation
 
@@ -13,23 +12,21 @@ The whole concept is to restore serialized state from the storage on application
 npm install redux-local-state-serializer --save
 ```
 
-## Usage
+## Example
 
 First off, import the state manager and its dependencies using es6 imports
 ```javascript
 import { StateManager, Storage } from 'redux-local-state-serializer';
 ```
-or using commonJS syntax
-```javascript
-const localSerializer = require('redux-local-state-serializer');
-const { StateManager, Storage }  = localSerializer;
-```
-In this case Storage is a default implementation of a local storage that incapsulates [localForage](https://github.com/localForage/localForage "localForage") inside of it. We recommend to use this implementation because it provides a local storage (IndexedDB, WebSQL, localStorage) for a wide range of browsers. However you can provide your own implementation of a storage based on our Storage API.
 
-In order to proceed we need to initialize our state manager. State manager holds the necessary API methods to provide serialization. Each piece of the state gets through the serialization process before saving into the store. The package can't decide how your data has to be saved, so you should provide a serializer.
+In this case Storage is a default implementation of a local storage that incapsulates [localForage](https://github.com/localForage/localForage "localForage") inside of it. We recommend to use this implementation because it provides a cross-browser storage implementation (IndexedDB, WebSQL, localStorage). However, you can provide your own implementation.
+
+In order to proceed we need to initialize our state manager. State manager holds necessary API methods to provide serialization. Each piece of the state gets through the serialization function before it gets saved. The package can't decide how your data has to be serialized, so you should provide a serializer instance.
+
+### Serializer
 
 Serializer is an object that knows how to **serialize** and **deserialize** your state.
-The goal is to provide such serializer for each node of you state, and then combine them all into one root serializer using `combineSerializers` function shipped with the package.
+The goal is to provide a serializer for each node of you state, and then combine them all into one root serializer using `combineSerializers` function shipped with the package.
 
 The idea is to export serializers along with reducers, as these components are very close to each other.
 
@@ -39,12 +36,12 @@ Here is an example of such reducer:
 export default (state = INITIAL_STATE, action) => { ... };
 
 export const serializer = {
-  serialize: state => state,
-  deserialize: state => state,
+  serialize: state => state, // describe serializing logic here
+  deserialize: state => state, // describe deserializing logic here
 };
 ```
 
-If your serialization requires some async operations, serialize/deserialize functions can as well return a promise
+If your serialization requires async operations, serialize/deserialize functions can as well return a promise
 
 ```javascript
 ...
@@ -60,12 +57,13 @@ As you can see, the file that exports a reducer, also exports a serializer. In t
 
 Even if you don't need to process your data before serialization, you have to explicitly define the serializer.
 
+But if you don't want to serialize some piece of state just don’t provide the serializer and it won't get to the storage.
 
-But if you don't want to serialize some piece of state just don’t provide the serializer and it won't get to the _Storage_.
-
-When you have your serializers, you simply combine them into one alike reducers, using `combineSerializers`. We recommend to do it in `reducers/index.js`.
+When you have your serializers, you simply combine them into one alike reducers, using `combineSerializers`.
 
 ```javascript
+// reducers/index.js
+
 ...
 import { combineSerializers } from 'redux-local-state-serializer';
 import todos, { serializer as todosSerializer } from './todo';
@@ -79,13 +77,15 @@ export const serializer = combineSerializers({
 
 **Note:** `todos` is the same for reducers and serializers. For serializer this key means what piece of state it is in charge of.
 
-You then simply import reducer along with serializer to the index file:
-
 ```javascript
+// src/index.js
+
 import rootReducer, { serializer } from './reducers';
 ```
 
-Now you have everyting you need to initialize state manager.
+At this point you have everyting you need to initialize state manager.
+
+### State manager
 
 ```javascript
 const stateManager = new StateManager({
@@ -100,39 +100,43 @@ As you know redux's `createStore` method allows [to pass a preloaded state](http
 
 ```javascript
 stateManager.restore().then((state) => {
-  const store = createStore(rootReducer, state);
+  const middleware = applyMiddleware(stateManager.middleware());
+  const store = createStore(rootReducer, state, middleware);
   ...
 });
 ```
 
-You get a state, that is a result of the last serialization. If this is the very first time you run the app, state will be `undefined`.
-
-The last thing you got to do is to subscribe to store changes.
-
-```javascript
-  store.subscribe(() => stateManager.snapshot(store.getState()));
-```
-
-state manager will take a snapshot each time the store changes, so the user will always have an actual state stored locally.
+You get a state, that is a result of the last serialization. If this is the very first time you run the app, state will be `undefined`. Each time the store changes state manager will take a snapshot and save it to the storage.
 
 **Take a look at a working example in the `/examples` folder**.
 
-So that's it.
-Happy serialization!
+## API
 
-## Entities
 ### Storage
-accepts a key as an argument. The key is used to identify the data entry.
-- *get* | void | Retrieves the data from storage by the key;
-- *set* | data Any? | Sets the passed data to the storage for the key;
-- *clear* | void | Cleans up the storage for the key;
+Accepts a key as an argument. The key is used to identify the data entry.
+
+| Property | Type | Description
+| --- | --- | --- |
+| get | function | Takes no arguments. Retrieves the data from storage by the key |
+| set | function | Takes data as a first argument. Sets the data to the storage by key |
+| clear | function | Takes no arguments. Cleans up the storage for the key |
 
 ### Serializer
-- *serialize* | state | Used to serialize the state
-- *deserialize* | state | Used to deserialize the state
+
+| Property | Type | Description
+| --- | --- | --- |
+| serialize | function | Takes state as an argument. Used to serialize the state |
+| deserialize | function | Takes serialized state as an argument. Used to deserialize the state |
 
 ### State Manager
-accepts storage, and serializer as dependencies
-- *restore* | void | Used to retrieve an earlier serialized state;
-- *snapshot* | state | Used to serialize a state;
-- *reset* | void | Used to reset the store;
+Accepts storage, and serializer as dependencies
+
+| Property | Type | Description
+| --- | --- | --- |
+| restore | function | Takes no arguments. Used to retrieve an earlier serialized state |
+| middleware | functin | Returns a redux middleware for taking snapshots on every state update.
+| snapshot | function | Takes state as an argument. Used to serialize a state |
+| reset | function | Takes no arguments. Used to reset the store |
+
+## License
+MIT
