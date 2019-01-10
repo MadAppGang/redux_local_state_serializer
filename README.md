@@ -65,7 +65,7 @@ When you have your serializers, you simply combine them into one alike reducers,
 // reducers/index.js
 
 ...
-import { combineSerializers } from 'redux-local-state-serializer';
+import { combineSerializers } from '@madappgang/redux-state-serializer';
 import todos, { serializer as todosSerializer } from './todo';
 
 export default combineReducers({ todos });

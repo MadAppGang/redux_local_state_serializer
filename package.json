@@ -1,6 +1,6 @@
 {
   "name": "@madappgang/redux-state-serializer",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Keeps your redux state persistent locally",
   "main": "dist/index.js",
   "scripts": {
