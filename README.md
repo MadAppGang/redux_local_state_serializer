@@ -9,17 +9,17 @@ This package uses a storage build ontop of [localForage](https://github.com/loca
 ## Installation
 
 ```bash
-npm install redux-local-state-serializer --save
+npm install --save @madappgang/redux-state-serializer
 ```
 
 ## Example
 
 First off, import the state manager and its dependencies using es6 imports
 ```javascript
-import { StateManager, Storage } from 'redux-local-state-serializer';
+import { StateManager, Storage } from '@madappgang/redux-state-serializer';
 ```
 
-In this case Storage is a default implementation of a local storage that incapsulates [localForage](https://github.com/localForage/localForage "localForage") inside of it. We recommend to use this implementation because it provides a cross-browser storage implementation (IndexedDB, WebSQL, localStorage). However, you can provide your own implementation.
+In this case Storage is a default implementation of a local storage that encapsulates [localForage](https://github.com/localForage/localForage "localForage") inside of it. We recommend to use this implementation because it provides a cross-browser storage solution (IndexedDB, WebSQL, localStorage). However, you can as well provide your own storage.
 
 In order to proceed we need to initialize our state manager. State manager holds necessary API methods to provide serialization. Each piece of the state gets through the serialization function before it gets saved. The package can't decide how your data has to be serialized, so you should provide a serializer instance.
 
