@@ -1,7 +1,7 @@
 {
-  "name": "redux-local-state-serializer",
+  "name": "@madappgang/redux-state-serializer",
   "version": "1.1.5",
-  "description": "Automate the process of serializing your redux state into local storage",
+  "description": "Keeps your redux state persistent locally",
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
